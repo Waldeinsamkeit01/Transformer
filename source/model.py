@@ -19,8 +19,6 @@ class EncoderDecoder(nn.Module):
 
         :param encoder: 传入一个编码器，将字符输入序列(x1,....,xn)，映射到新序列（自注意力序列）（z1,....,zn）
         :param decoder: 传入一个解码器，将序列（z1,....,zn），解码为字符输出序列（y1,...,yn）
-        # :param src_embed: 输入序列遮罩（一般不启用）
-        # :param tgt_embed: 输出序列遮罩（一般启用） 例子：我今天吃了番茄炒鸡蛋，输出“今天”应该只有“我”起作用，后面的“番茄炒鸡蛋”不应该被看到
         :param src_embed: 将源语言的字符转换为向量表示
         :param tgt_embed: 将目标语言的字符转换为向量表示
         :param generator: 接受decoder的输出，生成单词
@@ -50,7 +48,6 @@ class EncoderDecoder(nn.Module):
     def decode(self, memory, src_mask, tgt, tgt_mask):
         """
         解码器的解码过程，根据输入的memory、源语言mask、目标语言输入tgt以及目标语言mask进行解码操作。
-
         :param memory: 编码器的输出memory
         :param src_mask: 源语言mask，用于掩盖源语言序列中填充位置的注意力计算
         :param tgt: 目标语言输入序列
@@ -274,15 +271,22 @@ class PositionwiseFeedForward(nn.Module):
         return self.w_2(self.dropout(self.w_1(x).relu()))
 
 
+# class Embeddings(nn.Module):
+#     def __init__(self, d_model, vocab):
+#         super(Embeddings, self).__init__()
+#         self.lut = nn.Embedding(vocab, d_model)
+#         self.d_model = d_model
+#
+#     def forward(self, x):
+#         return self.lut(x) * math.sqrt(self.d_model)
+
 class Embeddings(nn.Module):
     def __init__(self, d_model, vocab):
         super(Embeddings, self).__init__()
         self.lut = nn.Embedding(vocab, d_model)
         self.d_model = d_model
-
     def forward(self, x):
         return self.lut(x) * math.sqrt(self.d_model)
-
 
 class PositionalEncoding(nn.Module):
     def __init__(self, d_model, dropout, max_len=5000):

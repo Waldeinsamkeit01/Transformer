@@ -27,7 +27,7 @@ from torchtext.data import to_map_style_dataset
 
 
 class Batch:
-    def __init__(self, src, tgt=None, pad=-1):  # -1 = <blank>
+    def __init__(self, src, tgt=None, pad=1):  # -1 = <blank>
         self.src = src
         self.src_mask = (src != pad).unsqueeze(-2)
         if tgt is not None:
@@ -300,7 +300,7 @@ def example_simple_model_gpus():
     # 词表大小
     V = 11
     batch_size = 80
-    criterion = LabelSmoothing(size=V, padding_idx=0, smoothing=0.0).to(device)
+    criterion = LabelSmoothing(size=V, padding_idx=1, smoothing=0.0).to(device)
     model = make_model(V, V, N=2).to(device)
     optimizer = torch.optim.Adam(
         model.parameters(), lr=0.5, betas=(0.9, 0.98), eps=1e-9
@@ -340,6 +340,13 @@ def example_simple_model_gpus():
 
 
 # example_simple_model_gpus()
+"""
+vocab_size=65000,
+bos_id=0,
+pad_id=1,
+eos_id=2,
+unk_id=3,
+"""
 
 
 def load_tokenizers():
@@ -378,7 +385,7 @@ def collate_batch(
         tgt_pipeline,
         device,
         max_padding=128,
-        pad_id=-1,
+        pad_id=1,
 ):
     """
     :param tokenizer_zh: tokenize处理器
@@ -498,7 +505,7 @@ def create_dataloaders(
             tokenize_en,
             device,
             max_padding=max_padding,
-            pad_id=-1
+            pad_id=1
         )
 
     train_iter = mydataset('../data/t/train.csv')
@@ -539,7 +546,7 @@ def train_worker(
     torch.cuda.set_device(gpu)
     # 这里选择先load tokenize 以继续模型的设置
     tokenizer_en, tokenizer_zh = load_tokenizers()
-    pad_index = -1
+    pad_index = 1
     d_model = 512
     model = make_model(len(tokenizer_zh), len(tokenizer_en), N=6)
     model.cuda(gpu)

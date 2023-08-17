@@ -58,7 +58,7 @@ t_en = tokenize("I love China", tokenizer_en)
 t_zh = tokenize("我爱中国", tokenizer_zh)
 print(t_en, t_zh)
 print(len(tokenizer_en))
-print(tokenizer_en.eos_id())
+print(tokenizer_en.pad_id())
 # print(tokenizer_en.Encode(t_en))
 
 
