@@ -335,8 +335,8 @@ def make_model(
     model = EncoderDecoder(
         Encoder(EncoderLayer(d_model, c(attn), c(ff), dropout), N),
         Decoder(DecoderLayer(d_model, c(attn), c(attn), c(ff), dropout), N),
-        nn.Sequential(Embeddings(d_model,src_vocab), c(position)),
-        nn.Sequential(Embeddings(d_model, tgt_vocab),c(position)),
+        nn.Sequential(Embeddings(d_model, src_vocab), c(position)),
+        nn.Sequential(Embeddings(d_model, tgt_vocab), c(position)),
         Generator(d_model, tgt_vocab)
     )
     for p in model.parameters():
